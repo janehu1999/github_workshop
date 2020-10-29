@@ -29,7 +29,7 @@ Likely the easiest step -- just go <a href="https://github.com/">here</a> and si
 
 After you have Git installed and a Github account, you will need to link them together on your machine.
 
-If you are on a Mac, open your terminal. If you are on Windows, open Git Bash. Remember that you can use the terminal that comes packaged in RStudio, but any terminal will do.
+If you are on a Mac, open your terminal. If you are on Windows, open Git Bash (or the command prompt if you are having trouble finding the Bash terminal). Remember that you can use the terminal that comes packaged in RStudio, but any terminal will do.
 
 Once you have your terminal open, type the following:
 
