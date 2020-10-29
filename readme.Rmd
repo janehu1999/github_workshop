@@ -1,5 +1,6 @@
 ---
 title: "Horror Films"
+always_allow_html: true
 output:
   github_document:
     toc: true
@@ -12,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ## Scraping Data
 
+Since we are rolling up on the spookiest holiday, it might be worth pulling in some data on horror movies. Not surprisingly, Wikipedia has some information about the top-grossing horror movies of all time.
+
 ```{r}
 library(rvest)
 
@@ -21,12 +24,56 @@ horrorMovies <- read_html(topGrossingLink) %>%
   html_table(fill = TRUE) %>% 
   `[[`(1)
 
-knitr::kable(horrorMovies)
+rmarkdown::paged_table(horrorMovies)
 ```
+
+As per usual, we will likely need to clean some of those dollar values up just a little bit:
+
+```{r}
+horrorMovies$`Worldwide gross` <- gsub("\\$|,", 
+                                       "", 
+                                       horrorMovies$`Worldwide gross`)
+
+horrorMovies$`Worldwide gross` <- as.numeric(horrorMovies$`Worldwide gross`)
+```
+
+All looks good now!
+
+```{r, echo = FALSE}
+skimr::skim(horrorMovies$`Worldwide gross`)
+```
+
+Which studios tend to do well with making money off horror?
+
+```{r}
+library(data.table)
+
+horrorMovies <- as.data.table(horrorMovies)
+
+sortedStudio <- horrorMovies[, 
+                             .(average = mean(`Worldwide gross`)), 
+                             by = Studio][order(-average)]
+
+rmarkdown::paged_table(sortedStudio)
+```
+
 
 ## Plotting Data
 
-```{r}
+Just for the fun of it, let's do some plotting over the years:
 
+```{r}
+library(plotly)
+
+plot_ly(horrorMovies, x = ~Year, y = ~`Worldwide gross`,
+        type = "scatter", mode = "markers",
+        text = ~paste("Film: ", Film, '<br>Studio: ', Studio, sep = ""))
+```
+
+We saw some averages for the studios earlier, so let's get a better idea about each studios distribution within the list:
+
+```{r}
+plot_ly(horrorMovies, x = ~`Worldwide gross`, y = ~Studio, 
+        type = "box")
 ```
 
