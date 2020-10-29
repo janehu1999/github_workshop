@@ -1,15 +1,9 @@
-Horror Films
-================
-
-  - [Scraping Data](#scraping-data)
-  - [Plotting Data](#plotting-data)
-  - [Relationship Exploration](#relationship-exploration)
 
 Did someone say Halloween?
 
-![](jason.gif)
+![](images/jason.gif)
 
-**NOT MY IMAGE. THE FINE FOLKS AT PARAMOUNT OWN IT**
+**NOT MY IMAGE. THE FINE FOLKS AT PARAMOUNT OWN IT\!**
 
 ## Scraping Data
 
@@ -24,7 +18,8 @@ library(knitr)
 library(kableExtra)
 library(rvest)
 
-topGrossingLink <- "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
+topGrossingLink <- 
+  "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
 
 horrorMovies <- read_html(topGrossingLink) %>% 
   html_table(fill = TRUE) %>% 
@@ -3251,7 +3246,7 @@ It looks like we lost a few movies\!
 I suppose you never know what might be creeping around with your data
 until you try to work with it\!
 
-![](pennywise.gif)
+![](images/pennywise.gif)
 
 ``` r
 horrorMovies$Film[!horrorMovies$Film %in% horrorOut$Title]
@@ -3285,7 +3280,11 @@ Now, we should be set to join:
 allData <- merge.data.table(horrorMovies, horrorOut, 
                             by.x = c("Film", "Year"), 
                             by.y = c("Title", "Year"))
+
+dim(allData)
 ```
+
+    ## [1] 50 32
 
 As per usual, we will need to clean up some variables before we can use
 them:
@@ -3330,7 +3329,7 @@ repeatDirectorData <- allData[Director %in% repeatedDirectors, ]
 ```
 
 Absolutely wild that 9 people account for about half of the top 50
-money-wise, but what about quality:
+money-wise, but what about quality?
 
 ``` r
 plotData <- melt.data.table(
@@ -3348,3 +3347,332 @@ ggplot(plotData,
 ```
 
 ![](readme_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+Seems like Jordan Peele’s brand of socially-drive horror is quality.
+
+Which movies are “Fresh”?
+
+``` r
+allData[`Rotten Tomatoes` > 69, list(Film, `Rotten Tomatoes`)]
+```
+
+    ##                         Film Rotten Tomatoes
+    ##  1:            A Quiet Place              96
+    ##  2:      Annabelle: Creation              71
+    ##  3:    Bram Stoker's Dracula              71
+    ##  4:                  Get Out              98
+    ##  5:                 Godzilla              76
+    ##  6:                Halloween              79
+    ##  7:                       It              85
+    ##  8:                     Jaws              98
+    ##  9:               Prometheus              73
+    ## 10:                    Signs              74
+    ## 11:  The Blair Witch Project              86
+    ## 12:            The Conjuring              86
+    ## 13:          The Conjuring 2              80
+    ## 14:             The Exorcist              83
+    ## 15:                 The Ring              71
+    ## 16: The Silence of the Lambs              96
+    ## 17:          The Sixth Sense              86
+    ## 18:              Unbreakable              70
+    ## 19:                       Us              93
+    ## 20:        War of the Worlds              75
+
+And then “Rotten”?
+
+``` r
+allData[`Rotten Tomatoes` < 70, list(Film, `Rotten Tomatoes`)]
+```
+
+    ##                                                   Film Rotten Tomatoes
+    ##  1:                                    Alien: Covenant              65
+    ##  2:                                          Annabelle              29
+    ##  3:                               Annabelle Comes Home              64
+    ##  4:                                        Constantine              46
+    ##  5:                                       Dark Shadows              36
+    ##  6:                                     Dracula Untold              24
+    ##  7:                                        End of Days              11
+    ##  8:                                              Glass              37
+    ##  9:                                           Godzilla              15
+    ## 10:                     Godzilla: King of the Monsters              43
+    ## 11:                                           Hannibal              39
+    ## 12:                                        I Am Legend              68
+    ## 13: Interview with the Vampire: The Vampire Chronicles              63
+    ## 14:                                     It Chapter Two              64
+    ## 15:                           Resident Evil: Afterlife              22
+    ## 16:                         Resident Evil: Retribution              29
+    ## 17:                                        Scary Movie              53
+    ## 18:                                      Scary Movie 3              35
+    ## 19:                                     Shutter Island              68
+    ## 20:                                            The Meg              46
+    ## 21:                                          The Mummy              61
+    ## 22:                                          The Mummy              16
+    ## 23:                                  The Mummy Returns              47
+    ## 24:              The Mummy: Tomb of the Dragon Emperor              12
+    ## 25:                                            The Nun              25
+    ## 26:                                        The Village              43
+    ## 27:                                        World War Z              66
+    ##                                                   Film Rotten Tomatoes
+
+Let’s see what a regression might get us:
+
+``` r
+rtGross <- lm(`Worldwide gross` ~ `Rotten Tomatoes`, 
+              data = allData)
+```
+
+<table style="text-align:center">
+
+<tr>
+
+<td colspan="2" style="border-bottom: 1px solid black">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+</td>
+
+<td>
+
+<em>Dependent variable:</em>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+</td>
+
+<td colspan="1" style="border-bottom: 1px solid black">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+</td>
+
+<td>
+
+`Worldwide gross`
+
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" style="border-bottom: 1px solid black">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+`Rotten Tomatoes`
+
+</td>
+
+<td>
+
+1,145,341.000
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+</td>
+
+<td>
+
+(733,234.700)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+</td>
+
+<td>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+Constant
+
+</td>
+
+<td>
+
+282,770,429.000<sup>\*\*\*</sup>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+</td>
+
+<td>
+
+(47,064,788.000)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+</td>
+
+<td>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" style="border-bottom: 1px solid black">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+Observations
+
+</td>
+
+<td>
+
+47
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+R<sup>2</sup>
+
+</td>
+
+<td>
+
+0.051
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+Adjusted R<sup>2</sup>
+
+</td>
+
+<td>
+
+0.030
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+Residual Std. Error
+
+</td>
+
+<td>
+
+126,828,366.000 (df = 45)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+F Statistic
+
+</td>
+
+<td>
+
+2.440 (df = 1; 45)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" style="border-bottom: 1px solid black">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left">
+
+<em>Note:</em>
+
+</td>
+
+<td style="text-align:right">
+
+<sup>*</sup>p\<0.1; <sup>**</sup>p\<0.05; <sup>***</sup>p\<0.01
+
+</td>
+
+</tr>
+
+</table>

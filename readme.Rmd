@@ -1,10 +1,6 @@
 ---
-title: "Horror Films"
 always_allow_html: true
-output:
-  github_document:
-    toc: true
-    toc_depth: 2
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,9 +9,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 Did someone say Halloween?
 
-![](jason.gif)
+![](images/jason.gif)
 
-**NOT MY IMAGE. THE FINE FOLKS AT PARAMOUNT OWN IT**
+**NOT MY IMAGE. THE FINE FOLKS AT PARAMOUNT OWN IT!**
 
 ## Scraping Data
 
@@ -28,7 +24,8 @@ library(knitr)
 library(kableExtra)
 library(rvest)
 
-topGrossingLink <- "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
+topGrossingLink <- 
+  "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
 
 horrorMovies <- read_html(topGrossingLink) %>% 
   html_table(fill = TRUE) %>% 
@@ -121,7 +118,7 @@ It looks like we lost a few movies!
 
 I suppose you never know what might be creeping around with your data until you try to work with it!
 
-![](pennywise.gif)
+![](images/pennywise.gif)
 
 ```{r}
 horrorMovies$Film[!horrorMovies$Film %in% horrorOut$Title]
@@ -147,6 +144,8 @@ Now, we should be set to join:
 allData <- merge.data.table(horrorMovies, horrorOut, 
                             by.x = c("Film", "Year"), 
                             by.y = c("Title", "Year"))
+
+dim(allData)
 ```
 
 As per usual, we will need to clean up some variables before we can use them:
@@ -187,7 +186,7 @@ repeatedDirectors <- unique(allData$Director[duplicated(allData$Director)])
 repeatDirectorData <- allData[Director %in% repeatedDirectors, ]
 ```
 
-Absolutely wild that 9 people account for about half of the top 50 money-wise, but what about quality:
+Absolutely wild that 9 people account for about half of the top 50 money-wise, but what about quality?
 
 ```{r}
 plotData <- melt.data.table(
@@ -202,5 +201,30 @@ ggplot(plotData,
        aes(x = value, y = Director, color = variable)) + 
   geom_boxplot() +
   theme_minimal()
+```
+
+Seems like Jordan Peele's brand of socially-drive horror is quality. 
+
+Which movies are "Fresh"?
+
+```{r}
+allData[`Rotten Tomatoes` > 69, list(Film, `Rotten Tomatoes`)]
+```
+
+And then "Rotten"?
+
+```{r}
+allData[`Rotten Tomatoes` < 70, list(Film, `Rotten Tomatoes`)]
+```
+
+Let's see what a regression might get us:
+
+```{r}
+rtGross <- lm(`Worldwide gross` ~ `Rotten Tomatoes`, 
+              data = allData)
+```
+
+```{r, echo = FALSE, results='asis'}
+stargazer::stargazer(rtGross, type = "html", header = FALSE)
 ```
 
