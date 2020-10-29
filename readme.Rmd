@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 Since we are rolling up on the spookiest holiday, it might be worth pulling in some data on horror movies. Not surprisingly, Wikipedia has some information about the top-grossing horror movies of all time.
 
-```{r, results='asis'}
+```{r, results='markup'}
 library(rvest)
 
 topGrossingLink <- "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
