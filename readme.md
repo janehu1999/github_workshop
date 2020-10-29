@@ -3,7 +3,7 @@ Horror Films
 
   - [Scraping Data](#scraping-data)
   - [Plotting Data](#plotting-data)
-  - [Models](#models)
+  - [Relationship Exploration](#relationship-exploration)
 
 Did someone say Halloween?
 
@@ -19,9 +19,9 @@ some information about the top-grossing horror movies of all time.
 
 ``` r
 library(data.table)
+library(ggplot2)
 library(knitr)
 library(kableExtra)
-library(plotly)
 library(rvest)
 
 topGrossingLink <- "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
@@ -3190,40 +3190,39 @@ Beacon Pictures
 Just for the fun of it, let’s do some plotting over the years:
 
 ``` r
-plot_ly(horrorMovies, x = ~Year, y = ~`Worldwide gross`,
-        type = "scatter", mode = "markers",
-        text = ~paste("Film: ", Film, '<br>Studio: ', Studio, sep = ""))
+ggplot(horrorMovies, aes(x = Year, y = `Worldwide gross`, label = Film)) +
+  ggrepel::geom_text_repel(size = 2) +
+  theme_minimal()
 ```
 
-<!--html_preserve-->
+![](readme_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-<div id="htmlwidget-ca11398698d973728d3c" class="plotly html-widget" style="width:672px;height:480px;">
+``` r
+# If you want to get fancy with plotly, that
+# code is below:
 
-</div>
-
-<script type="application/json" data-for="htmlwidget-ca11398698d973728d3c">{"x":{"visdat":{"d428758e4c2d":["function () ","plotlyVisDat"]},"cur_data":"d428758e4c2d","attrs":{"d428758e4c2d":{"x":{},"y":{},"mode":"markers","text":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Year"},"yaxis":{"domain":[0,1],"automargin":true,"title":"`Worldwide gross`"},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[2017,1999,2005,2007,2013,2018,2014,2019,1975,1973,2001,1999,2017,2002,2012,2008,2019,1998,2018,2001,2018,2016,2013,2017,2017,2004,2010,2010,2017,2000,1991,2014,2004,2018,2017,2019,1999,2002,2000,2019,2012,2017,2012,2005,2019,1994,2003,2014,1992,1999],"y":[700381748,672806292,591745540,585349010,540007876,530243742,529076069,473093228,470653000,441306145,433013274,415933406,409231607,408247917,403354469,401128639,385900138,379014294,365550119,351692268,340939361,320392818,319494638,312242626,306515884,300257475,300228084,294804195,278454358,278019771,272742922,257047661,256697520,255498536,255407663,254732150,248639099,248218486,248118121,246985576,245527149,240891763,240004424,230884728,228552591,223664608,220673217,217124280,215862692,211989043],"mode":"markers","text":["Film: It<br>Studio: New Line Cinema","Film: The Sixth Sense<br>Studio: Hollywood Pictures","Film: War of the Worlds<br>Studio: Amblin Entertainment","Film: I Am Legend<br>Studio: Village Roadshow Pictures","Film: World War Z<br>Studio: Skydance Productions","Film: The Meg<br>Studio: Warner Bros. Pictures","Film: Godzilla<br>Studio: Legendary Pictures","Film: It Chapter Two<br>Studio: Warner Bros. Pictures","Film: Jaws<br>Studio: Universal Pictures","Film: The Exorcist<br>Studio: Hoya Productions","Film: The Mummy Returns<br>Studio: Universal Pictures","Film: The Mummy<br>Studio: Universal Pictures","Film: The Mummy<br>Studio: Universal Pictures","Film: Signs<br>Studio: Blinding Edge Pictures","Film: Prometheus<br>Studio: Scott Free Productions","Film: The Mummy: Tomb of the Dragon Emperor<br>Studio: Universal Pictures","Film: Godzilla: King of the Monsters<br>Studio: Legendary Pictures","Film: Godzilla<br>Studio: Centropolis Entertainment","Film: The Nun<br>Studio: New Line Cinema","Film: Hannibal<br>Studio: Dino De Laurentiis Company","Film: A Quiet Place<br>Studio: Platinum Dunes","Film: The Conjuring 2<br>Studio: New Line Cinema","Film: The Conjuring<br>Studio: New Line Cinema","Film: Resident Evil: The Final Chapter<br>Studio: Constantin Film","Film: Annabelle: Creation<br>Studio: New Line Cinema","Film: Van Helsing<br>Studio: Sommers Company / Stillking Films","Film: Resident Evil: Afterlife<br>Studio: Constantin Film","Film: Shutter Island<br>Studio: Phoenix Pictures","Film: Split<br>Studio: Blinding Edge Pictures","Film: Scary Movie<br>Studio: Dimension Films","Film: The Silence of the Lambs<br>Studio: Strong Heart/Demme Production","Film: Annabelle<br>Studio: New Line Cinema","Film: The Village<br>Studio: Blinding Edge Pictures","Film: Halloween<br>Studio: Blumhouse Productions","Film: Get Out<br>Studio: Blumhouse Productions","Film: Us<br>Studio: Monkeypaw Productions","Film: The Blair Witch Project<br>Studio: Haxan Films","Film: The Ring<br>Studio: DreamWorks Pictures","Film: Unbreakable<br>Studio: Blinding Edge Pictures","Film: Glass<br>Studio: Blinding Edge Pictures","Film: Dark Shadows<br>Studio: Village Roadshow Pictures","Film: Alien: Covenant<br>Studio: 20th Century Fox","Film: Resident Evil: Retribution<br>Studio: Constantin Film","Film: Constantine<br>Studio: Warner Bros. Pictures","Film: Annabelle Comes Home<br>Studio: New Line Cinema","Film: Interview with the Vampire<br>Studio: The Geffen Film Company","Film: Scary Movie 3<br>Studio: Dimension Films","Film: Dracula Untold<br>Studio: Universal Pictures","Film: Bram Stoker's Dracula<br>Studio: American Zoetrope","Film: End of Days<br>Studio: Beacon Pictures"],"type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-
-<!--/html_preserve-->
+# plot_ly(horrorMovies, x = ~Year, y = ~`Worldwide gross`,
+#         type = "scatter", mode = "markers",
+#         text = ~paste("Film: ", Film, '<br>Studio: ', Studio, sep = ""))
+```
 
 We saw some averages for the studios earlier, so let’s get a better idea
 about each studios distribution within the list:
 
 ``` r
-plot_ly(horrorMovies, x = ~`Worldwide gross`, y = ~Studio, 
-        type = "box")
+ggplot(horrorMovies, aes(x = `Worldwide gross`, y = Studio)) +
+  geom_boxplot() + 
+  theme_minimal()
 ```
 
-<!--html_preserve-->
+![](readme_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-<div id="htmlwidget-84513f88c1ef1d28f5b2" class="plotly html-widget" style="width:672px;height:480px;">
+``` r
+# plot_ly(horrorMovies, x = ~`Worldwide gross`, y = ~Studio, 
+#         type = "box")
+```
 
-</div>
-
-<script type="application/json" data-for="htmlwidget-84513f88c1ef1d28f5b2">{"x":{"visdat":{"d428754c71eb":["function () ","plotlyVisDat"]},"cur_data":"d428754c71eb","attrs":{"d428754c71eb":{"x":{},"y":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"box"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"`Worldwide gross`"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Studio","type":"category","categoryorder":"array","categoryarray":["20th Century Fox","Amblin Entertainment","American Zoetrope","Beacon Pictures","Blinding Edge Pictures","Blumhouse Productions","Centropolis Entertainment","Constantin Film","Dimension Films","Dino De Laurentiis Company","DreamWorks Pictures","Haxan Films","Hollywood Pictures","Hoya Productions","Legendary Pictures","Monkeypaw Productions","New Line Cinema","Phoenix Pictures","Platinum Dunes","Scott Free Productions","Skydance Productions","Sommers Company / Stillking Films","Strong Heart/Demme Production","The Geffen Film Company","Universal Pictures","Village Roadshow Pictures","Warner Bros. Pictures"]},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"fillcolor":"rgba(31,119,180,0.5)","x":[700381748,672806292,591745540,585349010,540007876,530243742,529076069,473093228,470653000,441306145,433013274,415933406,409231607,408247917,403354469,401128639,385900138,379014294,365550119,351692268,340939361,320392818,319494638,312242626,306515884,300257475,300228084,294804195,278454358,278019771,272742922,257047661,256697520,255498536,255407663,254732150,248639099,248218486,248118121,246985576,245527149,240891763,240004424,230884728,228552591,223664608,220673217,217124280,215862692,211989043],"y":["New Line Cinema","Hollywood Pictures","Amblin Entertainment","Village Roadshow Pictures","Skydance Productions","Warner Bros. Pictures","Legendary Pictures","Warner Bros. Pictures","Universal Pictures","Hoya Productions","Universal Pictures","Universal Pictures","Universal Pictures","Blinding Edge Pictures","Scott Free Productions","Universal Pictures","Legendary Pictures","Centropolis Entertainment","New Line Cinema","Dino De Laurentiis Company","Platinum Dunes","New Line Cinema","New Line Cinema","Constantin Film","New Line Cinema","Sommers Company / Stillking Films","Constantin Film","Phoenix Pictures","Blinding Edge Pictures","Dimension Films","Strong Heart/Demme Production","New Line Cinema","Blinding Edge Pictures","Blumhouse Productions","Blumhouse Productions","Monkeypaw Productions","Haxan Films","DreamWorks Pictures","Blinding Edge Pictures","Blinding Edge Pictures","Village Roadshow Pictures","20th Century Fox","Constantin Film","Warner Bros. Pictures","New Line Cinema","The Geffen Film Company","Dimension Films","Universal Pictures","American Zoetrope","Beacon Pictures"],"type":"box","orientation":"h","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-
-<!--/html_preserve-->
-
-## Models
+## Relationship Exploration
 
 Let’s see if we can get into any relationships between movie information
 and money.
@@ -3308,3 +3307,44 @@ allData[,
 
 allData$`Internet Movie Database` <- allData$`Internet Movie Database` * 10
 ```
+
+Let’s check on some correlations between the ratings and gross:
+
+``` r
+corData <- allData[, 
+                   .(`Worldwide gross`, `Internet Movie Database`, 
+                     Metacritic, `Rotten Tomatoes`)]
+
+GGally::ggcorr(corData)
+```
+
+![](readme_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+There are a few frequent fliers on this list, so let’s see how those
+folks typically do:
+
+``` r
+repeatedDirectors <- unique(allData$Director[duplicated(allData$Director)])
+
+repeatDirectorData <- allData[Director %in% repeatedDirectors, ]
+```
+
+Absolutely wild that 9 people account for about half of the top 50
+money-wise, but what about quality:
+
+``` r
+plotData <- melt.data.table(
+  repeatDirectorData[, 
+                     .(Director, `Rotten Tomatoes`, 
+                       Metacritic, `Internet Movie Database`)], 
+  id.vars = "Director", 
+  measure.vars = c("Rotten Tomatoes", 
+                   "Metacritic", "Internet Movie Database"))
+
+ggplot(plotData, 
+       aes(x = value, y = Director, color = variable)) + 
+  geom_boxplot() +
+  theme_minimal()
+```
+
+![](readme_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->

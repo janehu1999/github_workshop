@@ -23,9 +23,9 @@ Since we are rolling up on the spookiest holiday, it might be worth pulling in s
 
 ```{r}
 library(data.table)
+library(ggplot2)
 library(knitr)
 library(kableExtra)
-library(plotly)
 library(rvest)
 
 topGrossingLink <- "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
@@ -73,19 +73,30 @@ kable_material(kable(sortedStudio),
 Just for the fun of it, let's do some plotting over the years:
 
 ```{r}
-plot_ly(horrorMovies, x = ~Year, y = ~`Worldwide gross`,
-        type = "scatter", mode = "markers",
-        text = ~paste("Film: ", Film, '<br>Studio: ', Studio, sep = ""))
+ggplot(horrorMovies, aes(x = Year, y = `Worldwide gross`, label = Film)) +
+  ggrepel::geom_text_repel(size = 2) +
+  theme_minimal()
+
+# If you want to get fancy with plotly, that
+# code is below:
+
+# plot_ly(horrorMovies, x = ~Year, y = ~`Worldwide gross`,
+#         type = "scatter", mode = "markers",
+#         text = ~paste("Film: ", Film, '<br>Studio: ', Studio, sep = ""))
 ```
 
 We saw some averages for the studios earlier, so let's get a better idea about each studios distribution within the list:
 
 ```{r}
-plot_ly(horrorMovies, x = ~`Worldwide gross`, y = ~Studio, 
-        type = "box")
+ggplot(horrorMovies, aes(x = `Worldwide gross`, y = Studio)) +
+  geom_boxplot() + 
+  theme_minimal()
+
+# plot_ly(horrorMovies, x = ~`Worldwide gross`, y = ~Studio, 
+#         type = "box")
 ```
 
-## Models
+## Relationship Exploration
 
 Let's see if we can get into any relationships between movie information and money.
 
@@ -156,5 +167,40 @@ allData[,
 # And let's multiply IMDB by 10 to put it on the same scale as the others:
 
 allData$`Internet Movie Database` <- allData$`Internet Movie Database` * 10
+```
+
+Let's check on some correlations between the ratings and gross:
+
+```{r}
+corData <- allData[, 
+                   .(`Worldwide gross`, `Internet Movie Database`, 
+                     Metacritic, `Rotten Tomatoes`)]
+
+GGally::ggcorr(corData)
+```
+
+There are a few frequent fliers on this list, so let's see how those folks typically do:
+
+```{r}
+repeatedDirectors <- unique(allData$Director[duplicated(allData$Director)])
+
+repeatDirectorData <- allData[Director %in% repeatedDirectors, ]
+```
+
+Absolutely wild that 9 people account for about half of the top 50 money-wise, but what about quality:
+
+```{r}
+plotData <- melt.data.table(
+  repeatDirectorData[, 
+                     .(Director, `Rotten Tomatoes`, 
+                       Metacritic, `Internet Movie Database`)], 
+  id.vars = "Director", 
+  measure.vars = c("Rotten Tomatoes", 
+                   "Metacritic", "Internet Movie Database"))
+
+ggplot(plotData, 
+       aes(x = value, y = Director, color = variable)) + 
+  geom_boxplot() +
+  theme_minimal()
 ```
 
