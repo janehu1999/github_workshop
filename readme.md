@@ -3239,7 +3239,7 @@ allData <- merge.data.table(horrorMovies, horrorOut,
 dim(allData)
 ```
 
-    ## [1] 48 32
+    [1] 48 32
 
 It looks like we lost a few movies\!
 
@@ -3252,14 +3252,16 @@ until you try to work with it\!
 horrorMovies$Film[!horrorMovies$Film %in% horrorOut$Title]
 ```
 
-    ## [1] "Resident Evil: The Final Chapter" "Interview with the Vampire"
+``` 
+[1] "Resident Evil: The Final Chapter" "Interview with the Vampire"      
+```
 
 ``` r
 horrorOut$Title[!horrorMovies$Film %in% horrorOut$Title]
 ```
 
-    ## [1] "Resident Evil the Final Chapter: Explore the Hive" 
-    ## [2] "Interview with the Vampire: The Vampire Chronicles"
+    [1] "Resident Evil the Final Chapter: Explore the Hive" 
+    [2] "Interview with the Vampire: The Vampire Chronicles"
 
 That’s just silly…but since it is just a few, we won’t worry about a
 fuzzy join.
@@ -3284,7 +3286,7 @@ allData <- merge.data.table(horrorMovies, horrorOut,
 dim(allData)
 ```
 
-    ## [1] 50 32
+    [1] 50 32
 
 As per usual, we will need to clean up some variables before we can use
 them:
@@ -3356,27 +3358,29 @@ Which movies are “Fresh”?
 allData[`Rotten Tomatoes` > 69, list(Film, `Rotten Tomatoes`)]
 ```
 
-    ##                         Film Rotten Tomatoes
-    ##  1:            A Quiet Place              96
-    ##  2:      Annabelle: Creation              71
-    ##  3:    Bram Stoker's Dracula              71
-    ##  4:                  Get Out              98
-    ##  5:                 Godzilla              76
-    ##  6:                Halloween              79
-    ##  7:                       It              85
-    ##  8:                     Jaws              98
-    ##  9:               Prometheus              73
-    ## 10:                    Signs              74
-    ## 11:  The Blair Witch Project              86
-    ## 12:            The Conjuring              86
-    ## 13:          The Conjuring 2              80
-    ## 14:             The Exorcist              83
-    ## 15:                 The Ring              71
-    ## 16: The Silence of the Lambs              96
-    ## 17:          The Sixth Sense              86
-    ## 18:              Unbreakable              70
-    ## 19:                       Us              93
-    ## 20:        War of the Worlds              75
+``` 
+                        Film Rotten Tomatoes
+ 1:            A Quiet Place              96
+ 2:      Annabelle: Creation              71
+ 3:    Bram Stoker's Dracula              71
+ 4:                  Get Out              98
+ 5:                 Godzilla              76
+ 6:                Halloween              79
+ 7:                       It              85
+ 8:                     Jaws              98
+ 9:               Prometheus              73
+10:                    Signs              74
+11:  The Blair Witch Project              86
+12:            The Conjuring              86
+13:          The Conjuring 2              80
+14:             The Exorcist              83
+15:                 The Ring              71
+16: The Silence of the Lambs              96
+17:          The Sixth Sense              86
+18:              Unbreakable              70
+19:                       Us              93
+20:        War of the Worlds              75
+```
 
 And then “Rotten”?
 
@@ -3384,35 +3388,37 @@ And then “Rotten”?
 allData[`Rotten Tomatoes` < 70, list(Film, `Rotten Tomatoes`)]
 ```
 
-    ##                                                   Film Rotten Tomatoes
-    ##  1:                                    Alien: Covenant              65
-    ##  2:                                          Annabelle              29
-    ##  3:                               Annabelle Comes Home              64
-    ##  4:                                        Constantine              46
-    ##  5:                                       Dark Shadows              36
-    ##  6:                                     Dracula Untold              24
-    ##  7:                                        End of Days              11
-    ##  8:                                              Glass              37
-    ##  9:                                           Godzilla              15
-    ## 10:                     Godzilla: King of the Monsters              43
-    ## 11:                                           Hannibal              39
-    ## 12:                                        I Am Legend              68
-    ## 13: Interview with the Vampire: The Vampire Chronicles              63
-    ## 14:                                     It Chapter Two              64
-    ## 15:                           Resident Evil: Afterlife              22
-    ## 16:                         Resident Evil: Retribution              29
-    ## 17:                                        Scary Movie              53
-    ## 18:                                      Scary Movie 3              35
-    ## 19:                                     Shutter Island              68
-    ## 20:                                            The Meg              46
-    ## 21:                                          The Mummy              61
-    ## 22:                                          The Mummy              16
-    ## 23:                                  The Mummy Returns              47
-    ## 24:              The Mummy: Tomb of the Dragon Emperor              12
-    ## 25:                                            The Nun              25
-    ## 26:                                        The Village              43
-    ## 27:                                        World War Z              66
-    ##                                                   Film Rotten Tomatoes
+``` 
+                                                  Film Rotten Tomatoes
+ 1:                                    Alien: Covenant              65
+ 2:                                          Annabelle              29
+ 3:                               Annabelle Comes Home              64
+ 4:                                        Constantine              46
+ 5:                                       Dark Shadows              36
+ 6:                                     Dracula Untold              24
+ 7:                                        End of Days              11
+ 8:                                              Glass              37
+ 9:                                           Godzilla              15
+10:                     Godzilla: King of the Monsters              43
+11:                                           Hannibal              39
+12:                                        I Am Legend              68
+13: Interview with the Vampire: The Vampire Chronicles              63
+14:                                     It Chapter Two              64
+15:                           Resident Evil: Afterlife              22
+16:                         Resident Evil: Retribution              29
+17:                                        Scary Movie              53
+18:                                      Scary Movie 3              35
+19:                                     Shutter Island              68
+20:                                            The Meg              46
+21:                                          The Mummy              61
+22:                                          The Mummy              16
+23:                                  The Mummy Returns              47
+24:              The Mummy: Tomb of the Dragon Emperor              12
+25:                                            The Nun              25
+26:                                        The Village              43
+27:                                        World War Z              66
+                                                  Film Rotten Tomatoes
+```
 
 Let’s see what a regression might get us:
 
