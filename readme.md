@@ -3682,3 +3682,33 @@ F Statistic
 </tr>
 
 </table>
+
+## Top 100
+
+``` r
+top100Link <- "https://www.rottentomatoes.com/top/bestofrt/top_100_horror_movies/"
+
+allTables <- read_html(top100Link) %>% 
+  html_table() 
+  
+tableNames <- lapply(allTables, function(x) names(x))
+
+tableNumber <- grep("Rank", tableNames)
+
+top100Table <- allTables[[tableNumber]]
+
+top100Table$Title <- gsub("\\s\\(.*[0-9]{4}\\)$", "", top100Table$Title)
+
+allData$Film[allData$Film %in% top100Table$Title]
+```
+
+``` 
+ [1] "A Quiet Place"            "Get Out"                 
+ [3] "Godzilla"                 "Godzilla"                
+ [5] "Halloween"                "It"                      
+ [7] "The Blair Witch Project"  "The Conjuring"           
+ [9] "The Mummy"                "The Mummy"               
+[11] "The Silence of the Lambs" "Us"                      
+```
+
+Cool stuff.

@@ -229,3 +229,25 @@ rtGross <- lm(`Worldwide gross` ~ `Rotten Tomatoes`,
 stargazer::stargazer(rtGross, type = "html", header = FALSE)
 ```
 
+
+
+## Top 100
+
+```{r}
+top100Link <- "https://www.rottentomatoes.com/top/bestofrt/top_100_horror_movies/"
+
+allTables <- read_html(top100Link) %>% 
+  html_table() 
+  
+tableNames <- lapply(allTables, function(x) names(x))
+
+tableNumber <- grep("Rank", tableNames)
+
+top100Table <- allTables[[tableNumber]]
+
+top100Table$Title <- gsub("\\s\\(.*[0-9]{4}\\)$", "", top100Table$Title)
+
+allData$Film[allData$Film %in% top100Table$Title]
+```
+
+Cool stuff.
