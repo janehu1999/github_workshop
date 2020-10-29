@@ -1,0 +1,68 @@
+---
+title: "Github Workshop: Steps"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Git is a version control software. Specifically, Git is a distributed repository system -- when you *clone* a repository, you are getting the complete repository. This is in contrast to a centralized repository system, in which you are getting only one particular version of a project. Both types are perfectly valid, but Git, and the services that utilize it, are likely more common.
+
+Github is a specific service that utilizes Git. It is not the only service that wraps around Git: Bitbucket and Gitlab are two things you might encounter.
+
+# Install Git
+
+Before you can really get started with Github, you need to download <a href="https://git-scm.com/downloads">Git</a>. Just step through your normal download process for your specific OS. 
+
+If you are using a Mac and want to go through the terminal, you can follow the advice <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">here</a>.
+
+# Create A Github Account
+
+Likely the easiest step -- just go <a href="https://github.com/">here</a> and signup. 
+
+# Link Accounts
+
+After you have Git installed and a Github account, you will need to link them together on your machine.
+
+If you are on a Mac, open your terminal. If you are on Windows, open Git Bash. Remember that you can use the terminal that comes packaged in RStudio, but any terminal will do.
+
+Once you have your terminal open, type the following:
+
+```
+git config --global user.name "githubUserName"
+```
+
+And then:
+
+```
+git config --global user.email "yourEmail@nd.edu"
+```
+
+That should be all you need for that!
+
+# Create Repo
+
+Now we have an age-old question -- create a project on Github first or elsewhere? I personally find it easier to create something on Github, clone the project, and start adding code from there. 
+
+If, however, you want to associate an existing project with Github, you will still need to create a Github project, but follow these steps next:
+
+```
+git remote add origin https://github.com/yourUserName/projectName.git
+
+git pull origin master
+
+git push -u origin master
+```
+
+No matter the route we take, we should have a project on Github and an RStudio project associated with the Github project.
+
+# Code
+
+Let's create a starter project.
+
+# Commit
+
+# Push
+
+# Pull

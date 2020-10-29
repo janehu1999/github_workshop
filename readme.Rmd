@@ -11,11 +11,21 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
+Did someone say Halloween?
+
+![](jason.gif)
+
+**NOT MY IMAGE. THE FINE FOLKS AT PARAMOUNT OWN IT**
+
 ## Scraping Data
 
 Since we are rolling up on the spookiest holiday, it might be worth pulling in some data on horror movies. Not surprisingly, Wikipedia has some information about the top-grossing horror movies of all time.
 
-```{r, results='markup'}
+```{r}
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(plotly)
 library(rvest)
 
 topGrossingLink <- "https://en.wikipedia.org/wiki/List_of_highest-grossing_horror_films"
@@ -24,7 +34,8 @@ horrorMovies <- read_html(topGrossingLink) %>%
   html_table(fill = TRUE) %>% 
   `[[`(1)
 
-DT::datatable(horrorMovies)
+kable_material(kable(horrorMovies), 
+               c("striped", "hover"))
 ```
 
 As per usual, we will likely need to clean some of those dollar values up just a little bit:
@@ -46,15 +57,14 @@ skimr::skim(horrorMovies$`Worldwide gross`)
 Which studios tend to do well with making money off horror?
 
 ```{r}
-library(data.table)
-
 horrorMovies <- as.data.table(horrorMovies)
 
 sortedStudio <- horrorMovies[, 
                              .(average = mean(`Worldwide gross`)), 
                              by = Studio][order(-average)]
 
-rmarkdown::paged_table(sortedStudio)
+kable_material(kable(sortedStudio), 
+               c("striped", "hover"))
 ```
 
 
@@ -63,8 +73,6 @@ rmarkdown::paged_table(sortedStudio)
 Just for the fun of it, let's do some plotting over the years:
 
 ```{r}
-library(plotly)
-
 plot_ly(horrorMovies, x = ~Year, y = ~`Worldwide gross`,
         type = "scatter", mode = "markers",
         text = ~paste("Film: ", Film, '<br>Studio: ', Studio, sep = ""))
@@ -75,5 +83,78 @@ We saw some averages for the studios earlier, so let's get a better idea about e
 ```{r}
 plot_ly(horrorMovies, x = ~`Worldwide gross`, y = ~Studio, 
         type = "box")
+```
+
+## Models
+
+Let's see if we can get into any relationships between movie information and money.
+
+We can load in our `horrorOut` data:
+
+```{r}
+load("data/horrorOut.RData")
+```
+
+And join it with our highest-grossing data:
+
+```{r}
+horrorOut$Year <- as.integer(horrorOut$Year)
+
+allData <- merge.data.table(horrorMovies, horrorOut, 
+                            by.x = c("Film", "Year"), 
+                            by.y = c("Title", "Year"))
+dim(allData)
+```
+
+It looks like we lost a few movies!
+
+I suppose you never know what might be creeping around with your data until you try to work with it!
+
+![](pennywise.gif)
+
+```{r}
+horrorMovies$Film[!horrorMovies$Film %in% horrorOut$Title]
+
+horrorOut$Title[!horrorMovies$Film %in% horrorOut$Title]
+```
+
+That's just silly...but since it is just a few, we won't worry about a fuzzy join.
+
+```{r}
+horrorMovies$Film[
+  horrorMovies$Film == "Resident Evil: The Final Chapter"
+  ] <- "Resident Evil the Final Chapter: Explore the Hive"
+
+horrorMovies$Film[
+  horrorMovies$Film == "Interview with the Vampire"
+  ] <- "Interview with the Vampire: The Vampire Chronicles"
+```
+
+Now, we should be set to join:
+
+```{r}
+allData <- merge.data.table(horrorMovies, horrorOut, 
+                            by.x = c("Film", "Year"), 
+                            by.y = c("Title", "Year"))
+```
+
+As per usual, we will need to clean up some variables before we can use them:
+
+```{r}
+ratingVars <- c("Internet Movie Database", 
+                "Metacritic", 
+                "Rotten Tomatoes")
+
+# We need to remove special characters in the ratings columns:
+
+allData[, 
+        (ratingVars) := lapply(.SD, function(x) {
+          as.numeric(gsub("/[0-1]+|%", "", x))
+        }), 
+        .SDcols = ratingVars]
+
+# And let's multiply IMDB by 10 to put it on the same scale as the others:
+
+allData$`Internet Movie Database` <- allData$`Internet Movie Database` * 10
 ```
 
