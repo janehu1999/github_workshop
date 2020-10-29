@@ -24,7 +24,7 @@ horrorMovies <- read_html(topGrossingLink) %>%
   html_table(fill = TRUE) %>% 
   `[[`(1)
 
-rmarkdown::paged_table(horrorMovies)
+DT::datatable(horrorMovies)
 ```
 
 As per usual, we will likely need to clean some of those dollar values up just a little bit:
