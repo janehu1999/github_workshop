@@ -7,9 +7,10 @@ Did someone say Halloween?
 
 ## Scraping Data
 
-Since we are rolling up on the spookiest holiday, it might be worth
-pulling in some data on horror movies. Not surprisingly, Wikipedia has
-some information about the top-grossing horror movies of all time.
+Since we are rolling up on the spookiest holiday – Halloween, it might
+be worth pulling in some data on horror movies. Not surprisingly,
+Wikipedia has some information about the top-grossing horror movies of
+all time.
 
 ``` r
 library(data.table)
